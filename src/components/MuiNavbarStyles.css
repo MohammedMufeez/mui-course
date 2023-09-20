@@ -1,0 +1,122 @@
+
+@media (min-width: 1280px) {
+  .app{
+    width: 100%;
+    height: 60px;
+    position: relative;
+  }
+  .logo{
+    width: 20vw;
+    height:59px;
+    margin-top: -3.5px;
+   
+  }
+  .nav-center{
+    display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7vw;
+  padding: 0 3vw;
+  }
+ .nav-end{
+  display: flex;
+  margin-right: 1rem;
+gap: 0.2vw;
+ }
+  .icon{
+    display: none;
+    
+  }
+.drawer{
+  display: none;
+}
+}
+
+@media (max-width: 1200px) {
+  .app{
+    width: 100%;
+    height: 50px;
+    position: relative;
+  }
+  .logo{
+    position: absolute;
+    height: 3rem;
+    left: 0;
+    top: 6.5px;
+ 
+  }
+  .nav-center{
+    position: relative;
+    display: flex;
+  align-items: center;
+  justify-content: 'space-between';
+  gap: 0.7vw;
+  padding: 0 3vw;
+  display: none;
+  }
+ .nav-end{
+  display: 'flex';
+  margin-right: 1rem;
+  display: none;
+
+ }
+  .icon{
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 30px;
+  }
+  .drawer-medium{
+    margin-top: 3.4rem;
+   }
+   .divider-name{
+      display: block;
+      width: 100%;
+      margin: 0.5rem auto;
+      border-top: 1px solid grey;
+      opacity: 0.6;
+   }
+}
+ 
+@media(max-width: 915px) {
+  .app{
+    width: 100%;
+    height: 50px;
+    position: relative;
+  }
+  .logo{
+    position: absolute;
+    height: 3rem;
+    left: 0;
+    margin-top: -5px;
+  }
+  .nav-center{
+    display: flex;
+  align-items: center;
+  justify-content: 'space-between';
+  gap: 0.7vw;
+  padding: 0 3vw;
+  display: none;
+  }
+ .nav-end{
+  display: 'flex';
+  margin-right: 1rem;
+  display: none;
+
+ }
+  .icon{
+    color: white;
+    display: flex;
+    font-size: large;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 30px;
+  }
+  .drawer-medium{
+    margin-top: 3.1rem;
+   }
+}
+
+
+
