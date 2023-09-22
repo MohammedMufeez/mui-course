@@ -10,22 +10,21 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 
 const menuItems = [
   {
-    label: "Hotels",
+    label: "HOTELS",
     link: "/hoteldashboard",
   },
   {
-    label: "Flights",
+    label: "FLIGHTS",
     link: "/flightdashboard",
   },
   {
-    label: "Transfers",
+    label: "TRANSFERS",
     link: "/transfersdashboard",
   },
   {
-    label: "D.Pkg.",
+    label: "D.PKG.",
     link: "/package/dashboard",
   },
- 
 ];
 
 const cpkgSubmenuItems = [
@@ -142,26 +141,23 @@ const MuiNav = () => {
     setClicked(!clicked);
   };
 
-  const handleCloseDrawer = () => {
-    setOpenDrawer(false);
-  };
-
   const handleClickCpkg = (event) => {
     setAnchorElCpkg(event.currentTarget);
+  };
+  const handleCloseCpkg = () => {
+    setAnchorElCpkg(null);
   };
 
   const handleClickDirectContracts = (event) => {
     setAnchorElDirectContracts(event.currentTarget);
   };
-
+ 
+  
   const handleClickAdmin = (event) => {
     setAnchorElAdmin(event.currentTarget);
   };
 
-  const handleCloseCpkg = () => {
-    setAnchorElCpkg(null);
-    setOpenSubmenuIndex(-1);
-  };
+  
 
   const handleCloseDirectContracts = () => {
     setAnchorElDirectContracts(null);
@@ -170,48 +166,29 @@ const MuiNav = () => {
   const handleCloseAdmin = () => {
     setAnchorElAdmin(null);
   };
-
-  const [anchorElCPKG, setAnchorElCPKG] = useState(null);
-  const [submenuOpenPACKAGES, setSubmenuOpenPACKAGES] = useState(false);
-  const [submenuOpenDASHBOARD, setSubmenuOpenDASHBOARD] = useState(false); 
-  const [submenuOpenBOOKINGS, setSubmenuOpenBOOKINGS] = useState(false); 
-
-  const [anchorElADMIN, setAnchorElADMIN] = useState(null);
-  const handleClickADMIN= () => {
-    setAnchorElADMIN((prevOpen) => !prevOpen);
-  };
   
-  const handleClickCPKG = () => {
-    setAnchorElCPKG((prevOpen) => !prevOpen);
-  };
-
-  const handleSubmenuClickCreate = () => {
-    setSubmenuOpenPACKAGES(!submenuOpenPACKAGES);
-  };
-
-  const handleSubmenuClickSEARCH = () => {
-    setSubmenuOpenDASHBOARD(!submenuOpenDASHBOARD);
-  };
-
-  const handleSubmenuClickVIEW = () => {
-    setSubmenuOpenBOOKINGS(!submenuOpenBOOKINGS);
-  };
-  
-  const [anchorElDIRECTCONTRACTS, setAnchorElDIRECTCONTRACTS] = useState(null);
-  const [submenuOpenDIRECTCONTRACTS, setSubmenuOpenDIRECTCONTRACTS] = useState(false);
-
-  const handleClickDIRECTCONTRACTS= () => {
-    setAnchorElDIRECTCONTRACTS((prevOpen) => !prevOpen);
-  };
-  const handleSubmenuClickDIRECTCONTRACTS= () => {
-    setSubmenuOpenDIRECTCONTRACTS(!submenuOpenDIRECTCONTRACTS);
-  };
-
   const [openSubmenuIndex, setOpenSubmenuIndex] = useState(-1);
   const handleSubmenuClick = (index) => (event) => {
     setOpenSubmenuIndex(openSubmenuIndex === index ? -1 : index);
   };
 
+  const [submenuOpenCp, setSubmenuOpenCp] = useState(false);
+  const handleSubmenuClickCp = () => {
+    setSubmenuOpenCp(!submenuOpenCp);
+  };
+
+  const [submenuOpenDc, setSubmenuOpenDc] = useState(false);
+  const handleSubmenuClickDc= () => {
+    setSubmenuOpenDc(!submenuOpenDc);
+  };
+
+  const [submenuOpenAdm, setSubmenuOpenAdm] = useState(false);
+  const handleSubmenuClickAdm = () => {
+    setSubmenuOpenAdm(!submenuOpenAdm);
+  };
+
+  
+  
   return (
     <AppBar className="app" sx={{ backgroundColor: "black" }}>
       <Toolbar sx={{
@@ -225,150 +202,205 @@ const MuiNav = () => {
           alt="Logo"
         />
 
-        <div className="nav-center">
-          {menuItems.map((item, index) => (
-            <Link to={item.link} key={index}>
-              <Button sx={{ color: "white" }}>{item.label}</Button>
-            </Link>
+<div className="nav-center">
+      {menuItems.map((item, index) => (
+        <Link to={item.link} key={index}>
+          <Button sx={{ color: "white" }}>{item.label}</Button>
+        </Link>
+      ))}
+
+      {/* C.PKG */}
+      <div>
+        <Button onClick={handleClickCpkg} sx={{ color: "white" }}>
+          C.PKG<ArrowDropDownIcon />
+        </Button>
+
+        <Menu
+          anchorEl={anchorElCpkg}
+          open={Boolean(anchorElCpkg)}
+          onClose={handleCloseCpkg}
+          PaperProps={{
+            sx: {
+              backgroundColor: 'black',
+              border: "1px solid grey",
+              borderRadius: "5px",
+              display: "inline-block",
+              marginLeft: "0.5rem",
+              marginRight: "0.5rem",
+            },
+          }}
+          MenuListProps={{
+            sx: {
+              color: 'white',
+            },
+          }}
+        >
+          {cpkgSubmenuItems.map((item, index) => (
+            <MenuItem key={index}>
+              <Link to={item.link} style={{ color: "inherit", textDecoration: "none" }}>
+                {item.label}
+              </Link>
+              <ArrowDropDownIcon
+                onClick={handleSubmenuClick(index)}
+                sx={{ cursor: 'pointer' }}
+              />
+              {item.subMenu && openSubmenuIndex === index && (
+                <Menu
+                  anchorEl={anchorElCpkg}
+                  open={openSubmenuIndex === index}
+                  onClose={handleSubmenuClick(index)}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  PaperProps={{
+                    sx: {
+                      backgroundColor: 'black',
+                      border: "1px solid grey",
+                      borderRadius: "5px",
+                      display: "inline-block",
+                      marginLeft: "0.5rem",
+                      marginRight: "0.5rem",
+                    },
+                  }}
+                  MenuListProps={{
+                    sx: {
+                      color: 'white',
+                    },
+                  }}
+                >
+                  {item.subMenu.map((subMenuItem, subIndex) => (
+                    <MenuItem key={subIndex}>
+                      <Link to={subMenuItem.link} style={{ color: "inherit", textDecoration: "none" }}>
+                        {subMenuItem.label}
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              )}
+            </MenuItem>
           ))}
+        </Menu>
+      </div>
 
-          {/* C.PKG */}
-          <div>
-      <Button onClick={handleClickCpkg} sx={{ color: "white" }}>
-        C.PKG<ArrowDropDownIcon />
-      </Button>
+      {/* DIRECT CONTRACTS */}
+      <div>
+        <Button onClick={handleClickDirectContracts} sx={{ color: "white" }}>
+          DIRECT CONTRACTS<ArrowDropDownIcon />
+        </Button>
 
-      <Menu
-         anchorEl={anchorElCpkg} 
-        open={Boolean(anchorElCpkg)}
-        onClose={handleCloseCpkg}
-        PaperProps={{
-          sx: {
-            backgroundColor: 'black',
-            border: "1px solid grey",
-            borderRadius: "5px",
-            display: "inline-block",
-            marginLeft: "0.5rem",
-            marginRight: "0.5rem",
-          },
-        }}
-        MenuListProps={{
-          sx: {
-            color: 'white',
-          },
-        }}
-      >
-        {cpkgSubmenuItems.map((item, index) => (
-          <MenuItem key={index}>
-            {item.label}
-            <ArrowDropDownIcon
-              onClick={handleSubmenuClick(index)}
-              sx={{ cursor: 'pointer' }}
-            />
-            {item.subMenu && openSubmenuIndex === index && (
-              <Menu
-                anchorEl={anchorElCpkg} 
-                open={openSubmenuIndex === index}
-                onClose={handleSubmenuClick(index)}
-               
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-               
-                PaperProps={{
-                  sx: {
-                    backgroundColor: 'black',
-                    border: "1px solid grey",
-                    borderRadius: "5px",
-                    display: "inline-block",
-                    marginLeft: "0.5rem",
-                    marginRight: "0.5rem",
-                  },
-                }}
-                MenuListProps={{
-                  sx: {
-                    color: 'white',
-                  },
-                }}
-              >
-                {item.subMenu.map((subMenuItem, subIndex) => (
-                  <MenuItem key={subIndex}>{subMenuItem.label}</MenuItem>
-                ))}
-              </Menu>
-            )}
-          </MenuItem>
-        ))}
-      </Menu>
+        <Menu
+          anchorEl={anchorElDirectContracts}
+          open={Boolean(anchorElDirectContracts)}
+          onClose={handleCloseDirectContracts}
+          PaperProps={{
+            sx: {
+              backgroundColor: 'black',
+              border: "1px solid grey",
+              borderRadius: "5px",
+              display: "inline-block",
+              marginLeft: "0.5rem",
+              marginRight: "0.5rem",
+            },
+          }}
+          MenuListProps={{
+            sx: {
+              color: 'white',
+            },
+          }}
+        >
+          {directContractsSubmenuItems.map((item, index) => (
+            <MenuItem key={index}>
+              <Link to={item.link} style={{ color: "inherit", textDecoration: "none" }}>
+                {item.label}
+              </Link>
+              <ArrowDropDownIcon
+                onClick={handleSubmenuClick(index)}
+                sx={{ cursor: 'pointer' }}
+              />
+              {item.subMenu && openSubmenuIndex === index && (
+                <Menu
+                  anchorEl={anchorElDirectContracts}
+                  open={openSubmenuIndex === index}
+                  onClose={handleSubmenuClick(index)}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  PaperProps={{
+                    sx: {
+                      backgroundColor: 'black',
+                      border: "1px solid grey",
+                      borderRadius: "5px",
+                      display: "inline-block",
+                      marginLeft: "0.5rem",
+                      marginRight: "0.5rem",
+                    },
+                  }}
+                  MenuListProps={{
+                    sx: {
+                      color: 'white',
+                    },
+                  }}
+                >
+                  {item.subMenu.map((subMenuItem, subIndex) => (
+                    <MenuItem key={subIndex}>
+                      <Link to={subMenuItem.link} style={{ color: "inherit", textDecoration: "none" }}>
+                        {subMenuItem.label}
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              )}
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
+
+      {/* ADMIN */}
+      <div>
+        <Button onClick={handleClickAdmin} sx={{ color: "white" }}>
+          ADMIN<ArrowDropDownIcon />
+        </Button>
+
+        <Menu
+          anchorEl={anchorElAdmin}
+          open={Boolean(anchorElAdmin)}
+          onClose={handleCloseAdmin}
+          PaperProps={{
+            sx: {
+              backgroundColor: 'black',
+              border: "1px solid grey",
+              borderRadius: "5px",
+              display: "inline-block",
+              marginLeft: "0.5rem",
+              marginRight: "0.5rem",
+            },
+          }}
+          MenuListProps={{
+            sx: {
+              color: 'white',
+            },
+          }}
+        >
+          {adminSubmenuItems.map((item, index) => (
+            <MenuItem key={index}>
+              <Link to={item.link} style={{ color: "inherit", textDecoration: "none" }}>
+                {item.label}
+              </Link>
+            </MenuItem>
+          ))}
+        </Menu>
+      </div>
     </div>
-
-          {/* DIRECT CONTRACTS */}
-          <div>
-            <Button
-              onClick={handleClickDirectContracts}
-              sx={{ color: "white" }}
-            >
-              DIRECT CONTRACTS<ArrowDropDownIcon />
-            </Button>
-
-            <Menu
-              anchorEl={anchorElDirectContracts}
-              open={Boolean(anchorElDirectContracts)}
-              onClose={handleCloseDirectContracts}
-              PaperProps={{
-                sx: {
-                  backgroundColor: 'black',
-                  border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem"
-                },
-              }}
-              MenuListProps={{
-                sx: {
-                  color: 'white',
-                },
-              }}
-            >
-              {directContractsSubmenuItems.map((item, index) => (
-                <MenuItem key={index}>{item.label}</MenuItem>
-              ))}
-            </Menu>
-          </div>
-
-          {/* ADMIN */}
-          <div>
-            <Button
-              onClick={handleClickAdmin}
-              sx={{ color: "white" }}
-            >
-              ADMIN<ArrowDropDownIcon />
-            </Button>
-
-            <Menu
-              anchorEl={anchorElAdmin}
-              open={Boolean(anchorElAdmin)}
-              onClose={handleCloseAdmin}
-              PaperProps={{
-                sx: {
-                  backgroundColor: 'black',
-                  border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem"
-                },
-              }}
-              MenuListProps={{
-                sx: {
-                  color: 'white',
-                },
-              }}
-            >
-              {adminSubmenuItems.map((item, index) => (
-                <MenuItem key={index}>{item.label}</MenuItem>
-              ))}
-            </Menu>
-          </div>
-        </div>
 
         <div className="nav-end">
           <Button sx={{ color: "white" }}>
@@ -411,113 +443,202 @@ const MuiNav = () => {
 >
       <List sx={{ backgroundColor: 'black',
       overflowY: 'auto', overflowX:"auto", maxHeight: '40vh', fontFamily: 'Roboto, sans-serif',  }} >
-        <ListItem button component="a" href="/hotels" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white" }}>
-          HOTELS
-        </ListItem>
-<Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        <ListItem button component="a" href="/flights" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white" }}>
-        FLIGHTS 
-        </ListItem>
- <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        <ListItem button component="a" href="/transfers" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white" }}>
-        TRANSFERS 
-        </ListItem>
-<Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        <ListItem button component="a" href="/d.pkg" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white" }}>
-        D.PKG
-        </ListItem>
- <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        <ListItem button onClick={handleClickCPKG} sx={{ display: 'flex',flexDirection: 'row',justifyContent: 'center',color:"white" }}>
-        C.PKG<ArrowDropDownIcon />  
-        </ListItem>
+       <div>
+      {menuItems.map((item, index) => (
+        <div key={index}>
+          <ListItem
+            button
+            component="a"
+            href={item.link}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              color: 'white',
+            }}
+          >
+            {item.label}
+          </ListItem>
+          <Divider
+            sx={{
+              display: 'block',
+              margin: '0.5rem auto',
+              borderTop: '1px solid grey',
+              opacity: '0.6',
+            }}
+          />
+        </div>
+      ))}
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Collapse in={Boolean(anchorElCPKG)}  timeout="auto" unmountOnExit  sx={{ display: 'flex', color:"white",}}>
-        <Box style={{ border: "1px solid grey",borderRadius: "5px", display: "inline-block",  marginLeft: "0.5rem", marginRight: "0.5rem" }}   >
-          <List>
-            <ListItem button onClick={handleSubmenuClickCreate} >
-                CREATE  <ArrowDropDownIcon />
-             </ListItem>
-            {submenuOpenPACKAGES && (
-              <Box style={{ border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-                <ListItem button>PACKAGES</ListItem>
-                <ListItem button>STATIC EXTRAS</ListItem>
-                <ListItem button>CATEGORY</ListItem>
-                <ListItem button>SITES</ListItem>
-              </Box>
-            )}
-            <ListItem button onClick={handleSubmenuClickSEARCH}>
-             SEARCH<ArrowDropDownIcon />
+<ListItem
+  button
+  onClick={handleSubmenuClickCp}
+  sx={{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    color: 'white',
+  }}
+>
+  C.PKG <ArrowDropDownIcon />
+</ListItem>
+
+<Collapse in={submenuOpenCp} timeout="auto" unmountOnExit sx={{ display: 'flex', color: 'white' }}>
+  <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <Box
+      style={{
+        border: '1px solid grey',
+        borderRadius: '5px',
+        display: 'inline-block',
+        marginLeft: '0.5rem',
+        marginRight: '0.5rem',
+      }}
+    >
+      <List>
+        {cpkgSubmenuItems.map((submenu, index) => (
+          <div key={index}>
+            <ListItem
+              button
+              onClick={submenu.subMenu ? handleSubmenuClick(index) : undefined} 
+            >
+              {submenu.label} {submenu.subMenu && <ArrowDropDownIcon />}
             </ListItem>
-            {submenuOpenDASHBOARD && (
-              <Box style={{ border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-                <ListItem button>
-                  DASHBOARD
-                </ListItem>
+          
+            {submenu.subMenu && openSubmenuIndex === index && (
+              <Box
+                style={{
+                  border: '1px solid grey',
+                  borderRadius: '5px',
+                  display: 'inline-block',
+                  marginLeft: '0.5rem',
+                  marginRight: '0.5rem',
+                }}
+              >
+                <List>
+                  {submenu.subMenu.map((subMenuItem, subIndex) => (
+                    <ListItem button key={subIndex} component="a" href={subMenuItem.link}>
+                      {subMenuItem.label}
+                    </ListItem>
+                  ))}
+                </List>
               </Box>
             )}
-            <ListItem button onClick={handleSubmenuClickVIEW}>
-             VIEW  <ArrowDropDownIcon /> 
+          </div>
+        ))}
+      </List>
+    </Box>
+  </div>
+</Collapse>
+
+
+
+      <Divider
+        sx={{
+          display: 'block',
+          margin: '0.5rem auto',
+          borderTop: '1px solid grey',
+          opacity: '0.6',
+        }}
+      />
+
+      <ListItem
+        button
+        onClick={handleSubmenuClickDc} 
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          color: 'white',
+        }}
+      >
+        DIRECT CONTRACTS <ArrowDropDownIcon />
+      </ListItem>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <Collapse in={submenuOpenDc} timeout="auto" unmountOnExit sx={{ display: 'flex', color: 'white' }}>
+  <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <Box
+      style={{
+        border: '1px solid grey',
+        borderRadius: '5px',
+        display: 'inline-block',
+        marginLeft: '0.5rem',
+        marginRight: '0.5rem',
+      }}
+    >
+      <List>
+        {directContractsSubmenuItems.map((submenu, index) => (
+          <div key={index}>
+            <ListItem
+              button
+              onClick={submenu.subMenu ? handleSubmenuClick(index) : undefined} 
+            >
+              {submenu.label} {submenu.subMenu && <ArrowDropDownIcon />}
             </ListItem>
-            {submenuOpenBOOKINGS && (
-              <Box style={{ border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-                <ListItem button>BOOKINGS</ListItem>
-                <ListItem button>PACKAGES</ListItem>
+          
+            {submenu.subMenu && openSubmenuIndex === index && (
+              <Box
+                style={{
+                  border: '1px solid grey',
+                  borderRadius: '5px',
+                  display: 'inline-block',
+                  marginLeft: '0.5rem',
+                  marginRight: '0.5rem',
+                }}
+              >
+                <List>
+                  {submenu.subMenu.map((subMenuItem, subIndex) => (
+                    <ListItem button key={subIndex} component="a" href={subMenuItem.link}>
+                      {subMenuItem.label}
+                    </ListItem>
+                  ))}
+                </List>
               </Box>
             )}
-          </List>
-          </Box>
-        </Collapse>
-        </div>
-      <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        
-      <ListItem button onClick={handleClickDIRECTCONTRACTS} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', color: 'white' }}>
-        DIRECT CONTRACTS<ArrowDropDownIcon />
-        </ListItem>
-        
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Collapse in={Boolean(anchorElDIRECTCONTRACTS)} timeout="auto" unmountOnExit  sx={{ display: 'flex',flexDirection: 'column', alignItems: 'center',color:"white" }}>
-        <Box style={{ border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-          <List>
-         <ListItem button>
-         <ListItem> MASTER</ListItem>
-         </ListItem>
-            <ListItem button onClick={handleSubmenuClickDIRECTCONTRACTS} 
-            sx={{ display: 'flex',flexDirection: 'column', alignItems: 'center',color:"white" }}>
-              <ListItem>
-                CONTRACTS <ArrowDropDownIcon />
-              </ListItem>
-              </ListItem>
-            {submenuOpenDIRECTCONTRACTS && (
-              <Box style={{ border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-                <ListItem button>ADD</ListItem>
-                <ListItem button>VIEW</ListItem>
-                <ListItem button> CALCULATION</ListItem>
-              </Box>
-            )}
-          </List>
-          </Box>
-        </Collapse>
-        </div>
+          </div>
+        ))}
+      </List>
+    </Box>
+  </div>
+</Collapse>
+      </div>
+    </div>
         <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        <ListItem button onClick={handleClickADMIN}   sx={{ display: 'flex',flexDirection: 'row', justifyContent: 'center', color:"white" }}>
-        ADMIN<ArrowDropDownIcon />  
-        </ListItem>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Collapse in={Boolean(anchorElADMIN)}  timeout="auto"  unmountOnExit 
-         sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white" }} >
-        <Box style={{ border: "1px solid grey", borderRadius: "5px", display: "inline-block", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-          <List>
-          <ListItem> DASHBOARD</ListItem>
-          <ListItem>LOGS</ListItem>
-          <ListItem>REPORTS</ListItem>
-          <ListItem>BRANCH</ListItem>
-          <ListItem>USER</ListItem>
-          <ListItem>HSD</ListItem>
-          </List>
+         
+        <ListItem
+        button
+        onClick={handleSubmenuClickAdm}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          color: 'white',
+        }}
+      >
+        ADMIN <ArrowDropDownIcon />
+      </ListItem>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Collapse in={submenuOpenAdm} timeout="auto" unmountOnExit sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'white' }}>
+          <Box
+            style={{
+              border: '1px solid grey',
+              borderRadius: '5px',
+              display: 'inline-block',
+              marginLeft: '0.5rem',
+              marginRight: '0.5rem',
+            }}
+          >
+            <List>
+              {adminSubmenuItems.map((submenuItem, index) => (
+                <ListItem button key={index} component="a" href={submenuItem.link}>
+                  {submenuItem.label}
+                </ListItem>
+              ))}
+            </List>
           </Box>
         </Collapse>
-        </div>
+      </div>
 
           <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
         <ListItem button sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white", marginLeft: '12px' }}>
@@ -526,7 +647,7 @@ const MuiNav = () => {
           </ListItemIcon>
         </ListItem>
           <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
-        <ListItem button sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white", marginLeft: '12px'}}>
+        <ListItem  sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white", marginLeft: '12px'}}>
           <ListItemIcon sx={{color:"white"}}>
             <AccountCircleIcon />
           </ListItemIcon>
