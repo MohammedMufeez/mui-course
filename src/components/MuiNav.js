@@ -1,6 +1,5 @@
 import "./MuiNavbarStyles.css";
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from 'react';
 import { AppBar, Button, Toolbar, IconButton, Menu, MenuItem, List, ListItem, ListItemText, Divider, ListItemIcon, Box, Collapse, Drawer, Paper } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -47,7 +46,7 @@ const menuItems = [
             href: "/customPackage/create",
           },
           {
-            name: "STATIC EXTRAS",
+            name: "STATICEXTRAS",
             href: "/customPackage/master/staticExtra",
           },
           {
@@ -161,36 +160,41 @@ const menuItems = [
 
 
 const MuiNav = () => {
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [clicked, setClicked] = useState(false);
-  const [openSubMenus, setOpenSubMenus] = useState({}); 
+  const [openSubmenuIndex, setOpenSubmenuIndex] = useState(-1);
+  const [openSubmenuItemIndex, setOpenSubmenuItemIndex] = useState(-1);
+  
+  const handleMenuItemClick = (index) => {
+    setOpenSubmenuIndex(openSubmenuIndex === index ? -1 : index);
+    setOpenSubmenuItemIndex(-1); 
+  
+  };
 
+  const handleSubmenuItemClick = (index) => {
+    setOpenSubmenuItemIndex(openSubmenuItemIndex === index ? -1 : index);
+  };
+
+    const [openDrawer, setOpenDrawer] = useState(false);
+  const [clicked, setClicked] = useState(false);
   const handleDrawerToggle = () => {
     setOpenDrawer(!openDrawer);
     setClicked(!clicked);
   };
 
-  const toggleSubMenu = (code) => {
-    setOpenSubMenus((prevOpenSubMenus) => ({
-      ...prevOpenSubMenus,
-      [code]: !prevOpenSubMenus[code], 
-    }));
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
+  
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const handleClickMenu = (event, index) => {
+  setMenuAnchorEl(event.currentTarget);
+  setOpenSubmenuIndex(index);
+  setOpenSubmenuItemIndex(-1);
+};
 
  
-  const [openSubmenuIndex, setOpenSubmenuIndex] = useState(-1);
-  const [openSubmenuItemIndex, setOpenSubmenuItemIndex] = useState(-1);
 
-  const handleMenuItemClick = (index) => {
-    setOpenSubmenuIndex(openSubmenuIndex === index ? -1 : index);
-  };
-
-  const handleSubmenuItemToggle = (index) => {
-    setOpenSubmenuItemIndex(openSubmenuItemIndex === index ? -1 : index);
-  };
-
-
-  return (
+return (
     <AppBar className="app" sx={{ backgroundColor: "black" }}>
       <Toolbar sx={{display: 'flex', justifyContent: 'space-between',alignItems: 'center',fontFamily: 'Roboto, sans-serif',}}>
         <img className='logo'
@@ -198,65 +202,87 @@ const MuiNav = () => {
           alt="Logo"
         />
 
-<div className="nav-center">
-  {menuItems.map((menuItem, index) => (
-    <div key={index}>
-      {menuItem.subMenu ? (
-        <Box sx={{ position: "relative", display: "inline-block" }}>
-          <Button
-            sx={{ color: "white" }}
-            onClick={() => toggleSubMenu(menuItem.code)}
-          >
-            {menuItem.name}<ArrowDropDownIcon />
-          </Button>
+<div className="nav-center" >
+          {menuItems.map((item, index) => (
+            <div key={item.code}>
+              <Box sx={{ position: "relative", display: "inline-block" }}>
+                <Button
+                  component="a"
+                  href={item.href}
+                  sx={{ color: "white" }}
+                  onClick={() => handleMenuItemClick(index)}
+                >
+                  {item.name}
+                  {item.subMenu && <ArrowDropDownIcon />}
+                </Button>
 
-        {openSubMenus[menuItem.code] && (
-            <Box sx={{ position: "absolute",top: "100%",left: 0,zIndex: 999,border: "1px solid grey",borderRadius: "5px",display: "inline-block",}}>
-              <List sx={{backgroundColor: 'black',fontFamily: 'Roboto, sans-serif',}}>
-                {menuItem.subMenu.map((subItem, subIndex) => (
-                  <div key={subIndex}>
-                    <ListItem button
-                      component="a"
-                      href={subItem.href}
-                      sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',color: 'white',}}>
-                      {subItem.name}
-                      {subItem.subMenu && (
-                        <ArrowDropDownIcon onClick={() => toggleSubMenu(subItem.code)}/>)}
-                    </ListItem>
-                    
-                    {subItem.subMenu && openSubMenus[subItem.code] && (
-                      <Paper sx={{backgroundColor:"black",color:"white",position: "absolute",top: 25,left: "100%",zIndex: 999,border: "1px solid grey",borderRadius: "5px",display: "inline-block" }}>
-                        {subItem.subMenu.map((subSubMenu, subSubIndex) => (
-                          <div key={subSubIndex}>
-                            <ListItem
-                              button
-                              component="a"
-                              href={subSubMenu.href}
-                              sx={{display: 'flex',flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',color: 'white'}}>
-                              {subSubMenu.name}
-                            </ListItem>
-                          </div>
-                        ))}
-                      </Paper>
-                    )}
-                  </div>
-                ))}
-              </List>
-            </Box>
-          )}
-        </Box>
-      ) : (
-        <Link to={menuItem.href}>
-          <Button sx={{ color: "white" }}>{menuItem.name}</Button>
-        </Link>
-      )}
-    </div>
-  ))}
-</div>
+                {item.subMenu && openSubmenuIndex === index && (
+                  <Box sx={{ position: "absolute", top: "100%", left: 0, zIndex: 999, border: "1px solid grey", borderRadius: "5px", display: "inline-block",}}>
+                    <List sx={{ backgroundColor: "black", fontFamily: "Roboto, sans-serif" }}>
+                      {item.subMenu.map((submenuItem, subIndex) => (
+                        <div key={submenuItem.code}>
+                          <ListItem
+                            button
+                            component="a"
+                            href={submenuItem.href}
+                            sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center",color: "white"}}
+                            onClick={() => handleSubmenuItemClick(subIndex)}
+                          >
+                            {submenuItem.name}
+                            {submenuItem.subMenu && <ArrowDropDownIcon />}
+                          </ListItem>
+                          {submenuItem.subMenu && openSubmenuItemIndex === subIndex && (
+                            <Paper  sx={{ backgroundColor: "black", color: "white",  position: "absolute", top: 25,  left: "100%", zIndex: 999,  border: "1px solid grey", borderRadius: "5px", display: "inline-block" }}>
+                              {submenuItem.subMenu.map((subOption) => (
+                                <div key={subOption.code}>
+                                  <ListItem
+                                    button
+                                    component="a"
+                                    href={subOption.href}
+                                    sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", color: "white" }}>
+                                    {subOption.name}
+                                  </ListItem>
+                                </div>
+                              ))}
+                            </Paper>
+                          )}
+                        </div>
+                      ))}
+                    </List>
+                  </Box>
+                )}
+              </Box>
+            </div>
+          ))}
+        </div>
+
         <div className="nav-end">
-          <Button sx={{ color: "white" }}>
-            LANGUAGE<ArrowDropDownIcon />
-          </Button>
+        <Button
+        sx={{ color: "white" }}
+        onClick={handleClickMenu}
+      >
+        LANGUAGE<ArrowDropDownIcon />
+      </Button>
+      <Menu
+  anchorEl={menuAnchorEl}
+  open={Boolean(menuAnchorEl)}
+  onClose={() => setMenuAnchorEl(null)} 
+  sx={{
+    '& .MuiPaper-root': {
+      backgroundColor: 'black',
+      color: 'white',
+      border: '1px solid grey',
+      borderRadius: '5px',
+
+    },
+  }}
+>
+  {["ENGLISH UK", "ENGLISH US", "SPANISH", "DANISH", "GERMAN", "ARABIC"].map((language, index) => (
+    <MenuItem key={index} onClick={(event) => handleClick(event, index)}>
+      {language}
+    </MenuItem>
+  ))}
+</Menu>
           <Button sx={{ color: "white" }}><NotificationsIcon /></Button>
           <Button sx={{ color: "white" }}><AccountCircleIcon /></Button>
         </div>
@@ -287,77 +313,120 @@ const MuiNav = () => {
   }}
 >
       <List sx={{ backgroundColor: 'black', overflowY: 'auto', overflowX:"auto", maxHeight: '40vh',fontFamily: 'Roboto, sans-serif',  }} >
-        <div>
-      {menuItems.map((item, index) => (
-        <div key={item.code}>
-          <ListItem
-            button
-            component="a"
-            href={item.href}
-            sx={{display: 'flex',flexDirection: 'column',alignItems: 'center',color: 'white',}}
-            onClick={() => handleMenuItemClick(index)}>
-            {item.name}
-            {item.subMenu && (
-              <ArrowDropDownIcon />
-            )}
-          </ListItem>
-
-          {item.subMenu && openSubmenuIndex === index && (
-            <Collapse in={true}>
-              <div style={{display: 'flex',justifyContent: 'center',}}>
-                <Box sx={{border: '1px solid grey',borderRadius: '5px',marginLeft: '0.5rem',marginRight: '0.5rem'}}>
-                  {item.subMenu.map((submenuItem, subIndex) => (
-                    <div key={submenuItem.code}>
-                      <ListItem
-                        button
-                        component="a"
-                        href={submenuItem.href}
-                        sx={{display: 'flex',flexDirection: 'row',justifyContent: 'space-between',alignItems: 'center',color: 'white'}}
-                        onClick={() => handleSubmenuItemToggle(subIndex)}>
-                        {submenuItem.name}
-                        {submenuItem.subMenu && (
-                          <ArrowDropDownIcon />
-                        )}
-                      </ListItem>
-
-                   {submenuItem.subMenu && openSubmenuItemIndex === subIndex && (
-                        <Box
-                        sx={{border: '1px solid grey',borderRadius: '5px',marginLeft: '0.5rem',marginRight: '0.5rem'}}>
-                       <div>
-                          {submenuItem.subMenu.map((subOption) => (
-                            <ListItem
-                              button
-                              component="a"
-                              href={subOption.href}
-                              sx={{display: 'flex',flexDirection: 'column',alignItems: 'center',color: 'white'}}
-                              key={subOption.code}
-                            >
-                              {subOption.name}
-                            </ListItem>
-                          ))}
-                        </div>
-                        </Box>
-                      )}
-                    </div>
-                  ))}
-                </Box>
-              </div>
-            </Collapse>
-          )}
-
-          {index < menuItems.length - 1 && (
-            <Divider sx={{display: 'block',margin: '0.5rem auto',borderTop: '1px solid grey',opacity: '0.6'}}/>
-          )}
+      <div>
+  {menuItems.map((item, index) => (
+    <div key={item.code}>
+      <ListItem
+        button
+        component="a"
+        href={item.href}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          color: 'white',
+        }}
+        onClick={() => handleMenuItemClick(index)}
+      >
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <span>{item.name}</span>
+          {item.subMenu && <ArrowDropDownIcon />}
         </div>
-      ))}
+      </ListItem>
+
+      {item.subMenu && openSubmenuIndex === index && (
+        <Collapse in={true}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ border: '1px solid grey', borderRadius: '5px', marginLeft: '0.5rem', marginRight: '0.5rem' }}>
+              {item.subMenu.map((submenuItem, subIndex) => (
+                <div key={submenuItem.code}>
+                  <ListItem
+                    button
+                    component="a"
+                    href={submenuItem.href}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      color: 'white',
+                    }}
+                    onClick={() => handleSubmenuItemClick(subIndex)}
+                  >
+                    {submenuItem.name}
+                    {submenuItem.subMenu && <ArrowDropDownIcon />}
+                  </ListItem>
+
+                  {submenuItem.subMenu && openSubmenuItemIndex === subIndex && (
+                    <Box sx={{ border: '1px solid grey', borderRadius: '5px', marginLeft: '0.5rem', marginRight: '0.5rem' }}>
+                      <div>
+                        {submenuItem.subMenu.map((subOption) => (
+                          <ListItem
+                            button
+                            component="a"
+                            href={subOption.href}
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              color: 'white',
+                            }}
+                            key={subOption.code}
+                          >
+                            {subOption.name}
+                          </ListItem>
+                        ))}
+                      </div>
+                    </Box>
+                  )}
+                </div>
+              ))}
+            </Box>
+          </div>
+        </Collapse>
+      )}
+
+      {index < menuItems.length - 1 && (
+        <Divider sx={{ display: 'block', margin: '0.5rem auto', borderTop: '1px solid grey', opacity: '0.6' }} />
+      )}
     </div>
-   <Divider sx={{display: 'block',margin: '0.5rem auto',borderTop: '1px solid grey',opacity: '0.6'}}/>
-      <ListItem button sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white", marginLeft: '12px' }}>
-          <ListItemIcon sx={{color:"white"}}>
-            <NotificationsIcon />
-          </ListItemIcon>
-        </ListItem>
-          <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
+  ))}
+
+
+  <Divider sx={{ display: 'block', margin: '0.5rem auto', borderTop: '1px solid grey', opacity: '0.6' }} />
+  <ListItem
+        button
+        onClick={() => handleMenuItemClick(0)} 
+        sx={{display: 'flex',  justifyContent: 'center',  color: 'white',}} >
+        LANGUAGE<ArrowDropDownIcon />
+      </ListItem>
+
+      <Collapse in={openSubmenuIndex === 0}>
+        <div style={{ display: 'flex', justifyContent: 'center',alignItems: 'center', }}>
+          <Box sx={{ border: '1px solid grey', borderRadius: '5px', width: '150px', margin: '5px 0', }}>
+            <List>
+              {["ENGLISH UK", "ENGLISH US", "SPANISH", "DANISH", "GERMAN", "ARABIC"].map((language, index) => (
+                <ListItem
+                  key={index}
+                  button
+                  onClick={() => handleSubmenuItemClick(index)}
+                  sx={{ color: 'white', justifyContent: 'center' }}
+                >
+                  <ListItemText primary={language} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </div>
+      </Collapse>
+</div>
+<Divider sx={{display: 'block',margin: '0.5rem auto',borderTop: '1px solid grey',opacity: '0.6'}}/>
+   <ListItem button sx={{ display: 'flex',flexDirection: 'column',alignItems: 'center', color: "white", marginLeft: '12px' }}>
+        <ListItemIcon sx={{ color: "white" }}>
+          <NotificationsIcon />
+        </ListItemIcon>
+      </ListItem>
+      <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
         <ListItem  sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white", marginLeft: '12px'}}>
           <ListItemIcon sx={{color:"white"}}>
             <AccountCircleIcon />
@@ -365,7 +434,7 @@ const MuiNav = () => {
         </ListItem>
  <Divider sx={{ display: "block", margin: "0.5rem auto", borderTop: "1px solid grey", opacity: "0.6" }} />
         <ListItem button sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center',color:"white",}}>
-          <ListItemIcon style={{ transform: 'rotate(90deg)',color:"white",marginRight:"0.5rem" ,marginTop:"0.5rem"}}>
+          <ListItemIcon style={{ transform: 'rotate(90deg)',color:"white",marginRight:"0.6rem" ,marginTop:"0.5rem"}}>
             <PowerSettingsNewIcon />
           </ListItemIcon>
           <span>LOGOUT</span>
